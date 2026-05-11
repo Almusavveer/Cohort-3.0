@@ -3,9 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment No 2</title>
+    <title>Insights & Blogs - ScaleX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <header class="header">
+        <div class="logo">
+            <img src="./assets/logo1.png" alt="ScaleX Logo">
+            <span>ScaleX</span>
+        </div>
+        <nav class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">About Us</a>
+            <a href="#">Blogs</a>
+            <a href="#">Contact Us</a>
+        </nav>
+        <button class="btn-primary">Get Started</button>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <h1 class="main-heading">Insights & Blogs</h1>
+            <div class="filters">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Tech</button>
+                <button class="filter-btn">SaaS</button>
+                <button class="filter-btn">Marketing</button>
+            </div>
+        </section>
+
+        <section class="cards-container">
+            <!-- Card 1 -->
+            <article class="card">
+                <div class="card-image">
+                    <img src="./assets/wine-glass-1.png" alt="Wine Glass">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <span class="badge">Tech</span>
+                    <h2 class="card-title">The Ultimate Guide To<br>SaaS Marketing</h2>
+                    <p class="card-date">May 23, 2025</p>
+                </div>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="card">
+                <div class="card-image">
+                    <img src="./assets/chair.png" alt="Chair">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <span class="badge">SaaS</span>
+                    <h2 class="card-title">5 Key Trends In SaaS<br>Growth For 2025</h2>
+                    <p class="card-date">May 23, 2025</p>
+                </div>
+            </article>
+
+            <!-- Card 3 -->
+            <article class="card">
+                <div class="card-image">
+                    <img src="./assets/cat.png" alt="Cat">
+                    <div class="image-overlay"></div>
+                </div>
+                <div class="card-content">
+                    <span class="badge">Marketing</span>
+                    <h2 class="card-title">How Data-Driven<br>Strategies Are Important</h2>
+                    <p class="card-date">May 23, 2025</p>
+                </div>
+            </article>
+        </section>
+    </main>
 </body>
 </html>
