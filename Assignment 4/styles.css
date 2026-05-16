@@ -380,6 +380,7 @@ body {
   grid-template-columns: 3fr 1fr;
   grid-template-rows: 1;
   padding: 20px 40px 20px 30px;
+  overflow: hidden;
 }
 
 .eight .left{
@@ -406,7 +407,7 @@ body {
   background-color: black;
   border-radius: 50px;
   border: none;
-  width: 40%;
+  width: 45%;
   height: 30px;
   padding: 10px 20px;
   display: flex;
@@ -419,22 +420,29 @@ body {
   font-size: 20px;
 }
 
+.eight .right {
+  position: relative;
+  z-index: 0;
+}
 
 .eight .right img{
-  width: 100%;
+  width: 150px;
   height: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .eight .right .circle{
   position: absolute;
-  top: 95%;
-  left: 72%;
+  top: 30%;
+  left: 50%;
   z-index: -1;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
   background-color: #f6c7cc;
 }
+
 .nine {
   grid-area: nine;
   background: #fcf8f8;
