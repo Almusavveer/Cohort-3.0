@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow | Premium Task Manager</title>
+    <meta name="description" content="A premium, interactive Task Manager and DOM propagation playground. Learn DOM rendering, Attributes vs Properties, and Event propagation in depth.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>
+            <span>⚡ TASKFLOW</span>
+        </h1>
+        <div class="theme-toggle-container">
+            <span class="theme-label" id="theme-mode-text">Dark Mode</span>
+            <button class="theme-btn" id="theme-toggle-btn" aria-label="Toggle Theme">
+                🌙
+            </button>
+        </div>
+    </header>
+
+    <main class="app-container">
+        
+        <div class="left-column">
+            <section class="glass-panel" id="dashboard-panel">
+                <h2 class="panel-title">
+                    <span class="title-icon">📋</span> Task Dashboard
+                </h2>
+                
+                <form class="task-form" id="todo-form" autocomplete="off">
+                    <div class="form-group">
+                        <label for="task-title">Task Title</label>
+                        <input type="text" id="task-title" placeholder="What needs to be done?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-category">Category</label>
+                        <select id="task-category">
+                            <option value="work">💼 Work</option>
+                            <option value="personal">🏠 Personal</option>
+                            <option value="shopping">🛒 Shopping</option>
+                            <option value="urgent">🔥 Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <button type="submit" class="btn-primary" id="add-task-btn">
+                            <span>Add Task</span>
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="filter-controls">
+                    <div class="search-box-wrapper">
+                        <input type="text" id="task-search" placeholder="Search tasks by title...">
+                    </div>
+                    <div class="category-filters" id="category-filter-container">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="work">Work</button>
+                        <button class="filter-btn" data-filter="personal">Personal</button>
+                        <button class="filter-btn" data-filter="shopping">Shopping</button>
+                        <button class="filter-btn" data-filter="urgent">Urgent</button>
+                    </div>
+                </div>
+                
+                <div class="task-stats-wrapper">
+                    <div class="task-stats">
+                        <div class="stat-item">Total: <span class="stat-count" id="stat-total">0</span></div>
+                        <div class="stat-item">Pending: <span class="stat-count" id="stat-pending">0</span></div>
+                        <div class="stat-item">Completed: <span class="stat-count" id="stat-completed">0</span></div>
+                    </div>
+                    <button id="clear-all-btn" class="btn-clear" aria-label="Clear all tasks"> Clear All</button>
+                </div>
+                
+                <div class="parent-container" id="task-parent">
+                    
+                    <div class="empty-state" id="tasks-empty-state">
+                        No tasks match your search or filter. Add some tasks above to begin!
+                    </div>
+                </div>
+            </section>
+
+            <section class="glass-panel" id="playground-panel">
+                <h2 class="panel-title">
+                    <span class="title-icon">🧪</span> Attributes vs Properties
+                </h2>
+                <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-secondary);">
+                    Explore how elements differ in their HTML source configuration (Attribute) versus their live in-memory JavaScript representation (Property).
+                </p>
+                <div class="playground-input-group">
+                    <label for="playground-input">Playground Input Box</label>
+                    <input type="text" id="playground-input" value="Original Attribute Value">
+                    
+                    <div class="play-controls">
+                        <div class="play-controls-row">
+                            <button class="play-btn" id="set-prop-btn">Set Live .value Property</button>
+                            <button class="play-btn" id="set-attr-btn">Set HTML Value Attribute</button>
+                        </div>
+                        <button class="play-btn" style="border-color: var(--danger-glow);" id="reset-playground-btn">Reset to HTML Defaults</button>
+                    </div>
+                </div>
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <span class="comp-header">input.value (Property)</span>
+                        <div class="comp-value" id="prop-val-display">-</div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">
+                            Reads from the live DOM node object state. Updates in real-time as you type.
+                        </p>
+                    </div>
+                    <div class="comparison-card">
+                        <span class="comp-header">input.getAttribute("value")</span>
+                        <div class="comp-value" id="attr-val-display">-</div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">
+                            Reads from the initial HTML markup attribute. Does NOT change automatically when typing.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="live-inspector-box">
+                    <div class="inspector-header">Live DOM Status Explorer</div>
+                    <div class="inspector-code">
+                        <span class="keyword">HTML Markup:</span> &lt;input id="playground-input" value="<span id="html-attr-val" class="highlight-val">Original Attribute Value</span>"&gt;
+                        <br/>
+                        <span class="keyword">DOM JS Property:</span> { value: "<span id="dom-prop-val" class="highlight-val">Original Attribute Value</span>" }
+                    </div>
+                    <div class="inspector-action-desc" id="inspector-action-desc">
+                        💡 <strong>Interactive Hint:</strong> Try typing in the input box above or clicking the buttons to see how the HTML attribute and JavaScript DOM property change!
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="right-column">
+            
+            <section class="glass-panel" id="propagation-panel">
+                <h2 class="panel-title">
+                    <span class="title-icon">🌊</span> Event Propagation Visualizer
+                </h2>
+                <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-secondary);">
+                    Click the Child Button inside the nested boxes. Observe how the event travels down in the <strong>Capturing Phase</strong>, triggers at target, and propagates back up in the <strong>Bubbling Phase</strong>.
+                </p>
+                
+                <div class="propagation-demo-wrapper">
+                    <div class="demo-box demo-grandparent" id="prop-grandparent">
+                        
+                        <div class="demo-box demo-parent" id="prop-parent">
+                            
+                            <button class="demo-box demo-child" id="prop-child">
+                               CHILD BUTTON (Click Me!)
+                            </button>
+                        </div>
+                </div>
+            </section>
+
+            <section class="glass-panel" id="pipeline-panel">
+                <h2 class="panel-title">
+                    <span class="title-icon">⚙️</span> Browser Rendering Pipeline
+                </h2>
+                <p style="font-size: 0.85rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                    A visual flowchart of how the browser engine processes raw byte files into interactive pixels.
+                </p>
+                <div class="pipeline-flow-container">
+                    <div class="flow-branches">
+                        
+                        <div class="flow-branch">
+                            <div class="flow-node-item html-node">
+                                <span class="flow-node-title">HTML Code</span>
+                                <span class="flow-node-desc">Raw Bytes / Files</span>
+                            </div>
+                            <div class="flow-arrow-down">↓</div>
+                            <div class="flow-node-item">
+                                <span class="flow-node-title">Tokenization</span>
+                                <span class="flow-node-desc">Chars to Tags/Tokens</span>
+                            </div>
+                            <div class="flow-arrow-down">↓</div>
+                            <div class="flow-node-item">
+                                <span class="flow-node-title">Parsing</span>
+                                <span class="flow-node-desc">Tokens to Nodes</span>
+                            </div>
+                            <div class="flow-arrow-down">↓</div>
+                            <div class="flow-node-item highlight-dom">
+                                <span class="flow-node-title">DOM Tree</span>
+                                <span class="flow-node-desc">Document Object Model</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flow-plus-divider">
+                            <div class="plus-circle">+</div>
+                        </div>
+
+                        <div class="flow-branch">
+                            <div class="flow-node-item css-node">
+                                <span class="flow-node-title">CSS Styles</span>
+                                <span class="flow-node-desc">Raw Stylesheets</span>
+                            </div>
+                            <div class="flow-arrow-down">↓</div>
+                            <div class="flow-node-item">
+                                <span class="flow-node-title">Parsing</span>
+                                <span class="flow-node-desc">Styles to Rules</span>
+                            </div>
+                            <div class="flow-arrow-down">↓</div>
+                            <div class="flow-node-item highlight-cssom">
+                                <span class="flow-node-title">CSSOM Tree</span>
+                                <span class="flow-node-desc">CSS Object Model</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-combined-section">
+                        <div class="flow-arrow-down-long">↓↓</div>
+                        
+                        <div class="flow-node-item wide highlight-render">
+                            <span class="flow-node-title">Render Tree</span>
+                            <span class="flow-node-desc">Combined DOM &amp; CSSOM (Filters out display: none elements)</span>
+                        </div>
+                        <div class="flow-arrow-down">↓</div>
+                        <div class="flow-node-item wide">
+                            <span class="flow-node-title">Layout (Reflow)</span>
+                            <span class="flow-node-desc">Calculates box dimensions, coordinates &amp; viewport geometry</span>
+                        </div>
+                        <div class="flow-arrow-down">↓</div>
+                        <div class="flow-node-item wide highlight-pixels">
+                            <span class="flow-node-title">Paint &amp; Composite</span>
+                            <span class="flow-node-desc">Rasterizes shapes, colors &amp; layers objects onto the GPU</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <p>Assignment 7 - DOM APIs &amp; Render Pipeline Exploration. </p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
