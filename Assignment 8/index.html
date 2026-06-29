@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTrack Pro - Next-Gen Financial Planner</title>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <!-- Confirmation Modal Overlay -->
+    <div class="modal-overlay" id="confirmOverlay" style="z-index: 300;">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <div class="modal-body" style="padding: 32px 24px;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background-color: rgba(244, 63, 94, 0.08); color: var(--expense); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <h3 id="confirmTitle" style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Are you sure?</h3>
+                <p id="confirmDesc" style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">This action cannot be undone.</p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="btn btn-outline" id="confirmCancelBtn" style="padding: 8px 16px;">Cancel</button>
+                    <button class="btn btn-danger" id="confirmOkBtn" style="padding: 8px 16px;">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Message Container -->
+    <div id="toast-container"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+        <div class="nav-brand" onclick="showPage('dashboard')">
+            <div class="nav-brand-logo">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span id="appLogo">FinTrack Pro</span>
+        </div>
+        
+        <div class="nav-links-wrapper">
+            <div class="nav-link active" onclick="showPage('dashboard')" id="nav-dashboard">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                Dashboard
+            </div>
+            <div class="nav-link" onclick="showPage('settings')" id="nav-settings">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                Settings
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <button class="btn btn-outline" onclick="fastToggleTheme()" style="padding: 8px; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                <svg id="theme-icon-sun" class="theme-icon" style="display:none;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z"/></svg>
+                <svg id="theme-icon-moon" class="theme-icon" style="display:none;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            </button>
+            <button class="btn btn-primary" onclick="openModal()">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                Add Transaction
+            </button>
+        </div>
+    </header>
+
+    <!-- Frame Container -->
+    <main class="container">
+        
+        <!-- DASHBOARD TAB SECTION -->
+        <section id="dashboard-page" class="app-section active">
+            <div class="dashboard-header">
+                <div>
+                    <h1 id="welcomeUser">Finances Ledger</h1>
+                    <p>Track your cash status, visualize limits, and generate automated insights.</p>
+                </div>
+            </div>
+
+            <!-- 4 Elegant Top stat cards -->
+            <div class="summary-grid">
+                <div class="card" style="border-bottom: 4px solid var(--primary);">
+                    <div class="card-meta-row">
+                        <div class="card-title">Current Balance</div>
+                        <div class="card-icon bg-primary-glow">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-value" id="val-balance">$0.00</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Cumulative standing</div>
+                </div>
+                <div class="card" style="border-bottom: 4px solid var(--income);">
+                    <div class="card-meta-row">
+                        <div class="card-title">Total Income</div>
+                        <div class="card-icon bg-income-glow">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-value" style="color: var(--income);" id="val-income">$0.00</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Incoming streams</div>
+                </div>
+                <div class="card" style="border-bottom: 4px solid var(--expense);">
+                    <div class="card-meta-row">
+                        <div class="card-title">Total Expense</div>
+                        <div class="card-icon bg-expense-glow">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-value" style="color: var(--expense);" id="val-expense">$0.00</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Spending outputs</div>
+                </div>
+                <div class="card" style="border-bottom: 4px solid var(--warning);">
+                    <div class="card-meta-row">
+                        <div class="card-title">Savings Rate</div>
+                        <div class="card-icon bg-warning-glow">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                    </div>
+                    <div class="card-value" id="val-savings-rate" style="color: var(--warning);">0%</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Disposable safety net</div>
+                </div>
+            </div>
+
+            <!-- Dashboard content split view -->
+            <div class="dashboard-content-split">
+                
+                <!-- Left Hand Visual & Alert Panels -->
+                <div class="visual-card">
+                    
+                    <!-- Advanced Visualisation Card (Tabbed) -->
+                    <div class="card" style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h2 style="font-size: 15px; font-weight: 700;">Financial Metrics</h2>
+                            <div class="chart-toggle-tabs">
+                                <button class="chart-toggle-btn active" id="btn-flow" onclick="switchChartType('flow')">Cash Flow</button>
+                                <button class="chart-toggle-btn" id="btn-breakdown" onclick="switchChartType('breakdown')">Categories</button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="cashFlowChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Category Budget Limits Visual Section -->
+                    <div class="card" style="padding: 20px;">
+                        <h2 style="font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <span>Category Budgets</span>
+                        </h2>
+                        <div id="budget-widget-container" class="budget-widget-list">
+                            <!-- Budget indicators populated via JS dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Smart Financial Advisory Insights Box -->
+                    <div class="card insights-panel" style="padding: 20px;">
+                        <h2 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            Smart Ledger Insights
+                        </h2>
+                        <div id="insights-text-container" class="insight-row">
+                            <!-- Advisory dynamically outputted -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Hand Ledger Section -->
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div class="table-toolbar">
+                        
+                        <!-- Premium Dynamic Search Action Bar -->
+                        <div class="table-search-row">
+                            <div class="search-wrapper">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                <input type="text" id="ledger-search" class="search-input" oninput="handleSearchFilter()" placeholder="Search transactions description or class...">
+                            </div>
+                            <button class="btn btn-outline" style="white-space: nowrap;" onclick="exportTransactionsToCSV()">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                Export CSV
+                            </button>
+                        </div>
+
+                        <!-- Categorical Filters Toolbar with sorting selector -->
+                        <div class="table-filters-row">
+                            <div class="filter-tabs">
+                                <button class="btn-filter active" onclick="setFilter('all', this)">All Logs</button>
+                                <button class="btn-filter" onclick="setFilter('income', this)">Incomes</button>
+                                <button class="btn-filter" onclick="setFilter('expense', this)">Expenses</button>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 12px; font-weight: 700; color: var(--text-muted);">Sort By:</span>
+                                <select id="ledger-sorter" class="sort-select" onchange="handleSortChange()">
+                                    <option value="date-desc">Newest Date</option>
+                                    <option value="date-asc">Oldest Date</option>
+                                    <option value="amount-desc">Value (High to Low)</option>
+                                    <option value="amount-asc">Value (Low to High)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Ledger Table -->
+                    <div class="ledger-table-card">
+                        <div class="ledger-table-wrapper">
+                            <table class="ledger-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th>Amount</th>
+                                        <th style="text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledgerTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="empty-state-container"></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SETTINGS PANEL SECTION -->
+        <section id="settings-page" class="app-section">
+            <div class="settings-card card">
+                <div class="settings-heading">
+                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    Profile & Limit Configuration Settings
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pref-name">Your Display Name</label>
+                        <input type="text" id="pref-name" class="form-control" placeholder="Jane Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="pref-currency">Display Currency</label>
+                        <select id="pref-currency" class="form-control">
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                            <option value="GBP">GBP (£)</option>
+                            <option value="INR">INR (₹)</option>
+                            <option value="JPY">JPY (¥)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Monthly Category Budget Setting Section -->
+                <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 20px;">
+                    <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Customize Category Spending Limits</div>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Set targeted monthly budgets for each major expense allocation class.</p>
+                    
+                    <div class="budget-setting-grid">
+                        <div class="form-group">
+                            <label for="budget-food">🍔 Food & Dining Limit</label>
+                            <input type="number" id="budget-food" class="form-control" placeholder="No limit set">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-shopping">🛍️ Shopping Limit</label>
+                            <input type="number" id="budget-shopping" class="form-control" placeholder="No limit set">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-bills">📱 Recharge & Bills Limit</label>
+                            <input type="number" id="budget-bills" class="form-control" placeholder="No limit set">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-petrol">🚗 Petrol & Auto Limit</label>
+                            <input type="number" id="budget-petrol" class="form-control" placeholder="No limit set">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-utilities">💡 Utilities Limit</label>
+                            <input type="number" id="budget-utilities" class="form-control" placeholder="No limit set">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-entertainment">🎬 Entertainment Limit</label>
+                            <input type="number" id="budget-entertainment" class="form-control" placeholder="No limit set">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="premium-switch-group">
+                    <div>
+                        <div style="font-weight: 600; font-size: 15px; margin-bottom: 2px;">Visual Theme Mode</div>
+                        <div style="font-size: 13px; color: var(--text-muted);">Toggle dark UI interface variables dynamically</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="pref-darkmode" onchange="toggleThemeFromSwitch(this)">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveSystemPreferences()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                    Apply Config & Limits
+                </button>
+
+                <!-- Danger Zone Block -->
+                <div class="danger-card">
+                    <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px;">
+                        <div style="color: var(--expense); margin-top: 3px;">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 15px; font-weight: 700; color: var(--text-color); margin-bottom: 4px;">Danger Area</h3>
+                            <p style="font-size: 13px; color: var(--text-muted);">Reset local storage completely. This action deletes all transactions and personalized budgets [cite: 14].</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" onclick="triggerWipeRoutine()">Wipe Session Databases</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- TRANSACTION CREATION FORM OVERLAY MODAL -->
+    <div class="modal-overlay" id="txModal" onclick="handleOverlayOuterClick(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Transaction Log</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="txForm" onsubmit="handleTransactionSubmit(event)">
+                    
+                    <div class="choice-segment">
+                        <label class="choice-inc">
+                            <input type="radio" name="txType" value="income" checked onchange="updateDynamicCategoryMenu()">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+                            Income Log
+                        </label>
+                        <label class="choice-exp">
+                            <input type="radio" name="txType" value="expense" onchange="updateDynamicCategoryMenu()">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                            Expense Out
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txDesc">Log Description</label>
+                        <input type="text" id="txDesc" class="form-control" placeholder="e.g. Whole Foods Groceries, Freelance Retainer" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="txAmount">Transaction Amount</label>
+                            <input type="number" id="txAmount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="txDate">Settlement Date</label>
+                            <input type="date" id="txDate" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txCategory">Category Class</label>
+                        <select id="txCategory" class="form-control" required>
+                            <!-- Category choices injected dynamically -->
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                        <button type="button" class="btn btn-outline" onclick="closeModal()">Dismiss</button>
+                        <button type="submit" class="btn" style="background-color: var(--primary); color: white;" id="txSubmitBtn">Save Transaction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ChartJS External CDN Component Framework -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Your Application Logic & DOM Driver -->
+    <script src="./script.js"></script>
+</body>
+</html>
