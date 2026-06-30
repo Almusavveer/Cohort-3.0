@@ -1,380 +1,531 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinTrack Pro - Next-Gen Financial Planner</title>
-    <!-- Inter Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FinTrack Pro Pro Edition - Premium Personal Finance Tracking">
+  <title>FinTrack Pro - Pro Edition</title>
+  <meta name="theme-color" content="#4f46e5">
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- styles -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Confirmation Modal Overlay -->
-    <div class="modal-overlay" id="confirmOverlay" style="z-index: 300;">
-        <div class="modal" style="max-width: 400px; text-align: center;">
-            <div class="modal-body" style="padding: 32px 24px;">
-                <div style="width: 56px; height: 56px; border-radius: 50%; background-color: rgba(244, 63, 94, 0.08); color: var(--expense); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
-                <h3 id="confirmTitle" style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Are you sure?</h3>
-                <p id="confirmDesc" style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px;">This action cannot be undone.</p>
-                <div style="display: flex; gap: 12px; justify-content: center;">
-                    <button class="btn btn-outline" id="confirmCancelBtn" style="padding: 8px 16px;">Cancel</button>
-                    <button class="btn btn-danger" id="confirmOkBtn" style="padding: 8px 16px;">Proceed</button>
-                </div>
-            </div>
+  <!-- login overlay -->
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-icon"><i class="fa-solid fa-vault"></i></div>
+      </div>
+      <h2 class="login-title">FinTrack Pro</h2>
+      <p class="login-subtitle">Pro Edition — Secure Personal Finance Hub</p>
+      
+      <div class="auth-tabs">
+        <button type="button" id="tabSignIn" class="auth-tab active" onclick="toggleAuthTab('signin')">Sign In</button>
+        <button type="button" id="tabSignUp" class="auth-tab" onclick="toggleAuthTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- sign in form -->
+      <form id="signInForm" onsubmit="handleSignIn(event)">
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label" for="signInUser">Username</label>
+          <input type="text" id="signInUser" class="form-control" placeholder="Enter username" required autocomplete="off">
         </div>
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label" for="signInPass">Password</label>
+          <input type="password" id="signInPass" class="form-control" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+          Access Dashboard <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <!-- sign up form -->
+      <form id="signUpForm" onsubmit="handleSignUp(event)" style="display: none;">
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label" for="signUpUser">Username</label>
+          <input type="text" id="signUpUser" class="form-control" placeholder="Create username" required autocomplete="off">
+        </div>
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label" for="signUpPass">Password</label>
+          <input type="password" id="signUpPass" class="form-control" placeholder="Create password" required>
+        </div>
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label" for="signUpCurrency">Default Currency</label>
+          <select id="signUpCurrency" class="form-control">
+            <option value="USD">USD ($) - US Dollar</option>
+            <option value="INR" selected>INR (₹) - Indian Rupee</option>
+            <option value="EUR">EUR (€) - Euro</option>
+            <option value="GBP">GBP (£) - British Pound</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+          </select>
+        </div>
+        <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; text-align: left; margin-top: 1rem; margin-bottom: 1.25rem;">
+          <input type="checkbox" id="signUpSampleData" checked style="width: 16px; height: 16px; cursor: pointer;">
+          <label for="signUpSampleData" style="font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; font-weight: 600;">Pre-populate with sample data</label>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+          Create Account <i class="fa-solid fa-user-plus"></i>
+        </button>
+      </form>
     </div>
+  </div>
+  <script>
+    // skip login if already authed
+    if (localStorage.getItem("fintrack_pro_active_user")) {
+      document.getElementById("loginOverlay").style.display = "none";
+    }
+  </script>
 
-    <!-- Toast Message Container -->
-    <div id="toast-container"></div>
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <div class="logo-container">
+      <div class="logo-icon"><i class="fa-solid fa-vault"></i></div>
+      <span class="logo-text">FinTrack <span class="logo-version">Pro Ed.</span></span>
+    </div>
+    
+    <nav>
+      <ul class="nav-list">
+        <li>
+          <a class="nav-item active" onclick="switchPage('dashboard', this)">
+            <i class="fa-solid fa-chart-pie"></i> Dashboard
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" onclick="switchPage('transactions', this)">
+            <i class="fa-solid fa-list-check"></i> Transactions
+          </a>
+        </li>
+        <li>
+          <a class="nav-item" onclick="switchPage('budgets', this)">
+            <i class="fa-solid fa-sliders"></i> Budget Limits
+          </a>
+        </li>
 
-    <!-- Top Navigation Header -->
+        <li>
+          <a class="nav-item" onclick="switchPage('settings', this)">
+            <i class="fa-solid fa-gear"></i> Settings
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-profile-badge">
+        <div id="userAvatar" class="avatar">U</div>
+        <div class="profile-info">
+          <span id="profileName" class="profile-name">User Name</span>
+          <span class="profile-role">Pro Account</span>
+        </div>
+        <button class="btn-icon" style="margin-left: auto;" onclick="handleLogout()" title="Sign Out">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- main wrapper -->
+  <div class="main-wrapper">
+    
+    <!-- top nav -->
     <header class="navbar">
-        <div class="nav-brand" onclick="showPage('dashboard')">
-            <div class="nav-brand-logo">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-            <span id="appLogo">FinTrack Pro</span>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <button id="mobileToggle" class="mobile-menu-toggle" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <h1 id="pageTitle" style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;">Dashboard</h1>
+      </div>
+      
+      <div class="nav-actions">
+        <div id="txCounter" class="counter-pill">
+          <i class="fa-solid fa-hashtag"></i> <span id="txCounterVal">0</span> Transactions
         </div>
-        
-        <div class="nav-links-wrapper">
-            <div class="nav-link active" onclick="showPage('dashboard')" id="nav-dashboard">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                Dashboard
-            </div>
-            <div class="nav-link" onclick="showPage('settings')" id="nav-settings">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                Settings
-            </div>
-        </div>
-
-        <div class="nav-actions">
-            <button class="btn btn-outline" onclick="fastToggleTheme()" style="padding: 8px; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
-                <svg id="theme-icon-sun" class="theme-icon" style="display:none;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z"/></svg>
-                <svg id="theme-icon-moon" class="theme-icon" style="display:none;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-            </button>
-            <button class="btn btn-primary" onclick="openModal()">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                Add Transaction
-            </button>
-        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <button class="btn btn-primary" onclick="openTransactionModal()">
+          <i class="fa-solid fa-plus"></i> Add Transaction
+        </button>
+      </div>
     </header>
 
-    <!-- Frame Container -->
-    <main class="container">
+    <main id="dashboardPage" class="page-container active">
+      <div id="budgetWarningsBanner" class="warnings-banner">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span id="budgetWarningText">Budget limit warnings go here.</span>
+      </div>
+
+      <!-- net balance cards -->
+      <div class="dashboard-grid">
+        <div class="glass-card">
+          <div class="card-header">
+            <span class="card-title">Net Balance</span>
+            <div class="card-icon balance"><i class="fa-solid fa-scale-balanced"></i></div>
+          </div>
+          <div id="cardBalance" class="card-value">₹0.00</div>
+          <div id="cardBalanceSub" class="card-subtext">Overall available funds</div>
+        </div>
         
-        <!-- DASHBOARD TAB SECTION -->
-        <section id="dashboard-page" class="app-section active">
-            <div class="dashboard-header">
-                <div>
-                    <h1 id="welcomeUser">Finances Ledger</h1>
-                    <p>Track your cash status, visualize limits, and generate automated insights.</p>
-                </div>
-            </div>
+        <div class="glass-card">
+          <div class="card-header">
+            <span class="card-title">Total Income</span>
+            <div class="card-icon income"><i class="fa-solid fa-arrow-trend-up"></i></div>
+          </div>
+          <div id="cardIncome" class="card-value" style="color: var(--color-income);">₹0.00</div>
+          <div id="cardIncomeSub" class="card-subtext">Cumulative credits logged</div>
+        </div>
+        
+        <div class="glass-card">
+          <div class="card-header">
+            <span class="card-title">Total Expense</span>
+            <div class="card-icon expense"><i class="fa-solid fa-arrow-trend-down"></i></div>
+          </div>
+          <div id="cardExpense" class="card-value" style="color: var(--color-expense);">₹0.00</div>
+          <div id="cardExpenseSub" class="card-subtext">Cumulative debits logged</div>
+        </div>
+        
+        <div class="glass-card">
+          <div class="card-header">
+            <span class="card-title">Monthly Savings</span>
+            <div class="card-icon savings"><i class="fa-solid fa-piggy-bank"></i></div>
+          </div>
+          <div id="cardSavings" class="card-value" style="color: var(--color-teal);">₹0.00</div>
+          <div id="cardSavingsSub" class="card-subtext">Current month net savings</div>
+        </div>
+      </div>
 
-            <!-- 4 Elegant Top stat cards -->
-            <div class="summary-grid">
-                <div class="card" style="border-bottom: 4px solid var(--primary);">
-                    <div class="card-meta-row">
-                        <div class="card-title">Current Balance</div>
-                        <div class="card-icon bg-primary-glow">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                        </div>
-                    </div>
-                    <div class="card-value" id="val-balance">$0.00</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">Cumulative standing</div>
-                </div>
-                <div class="card" style="border-bottom: 4px solid var(--income);">
-                    <div class="card-meta-row">
-                        <div class="card-title">Total Income</div>
-                        <div class="card-icon bg-income-glow">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                        </div>
-                    </div>
-                    <div class="card-value" style="color: var(--income);" id="val-income">$0.00</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">Incoming streams</div>
-                </div>
-                <div class="card" style="border-bottom: 4px solid var(--expense);">
-                    <div class="card-meta-row">
-                        <div class="card-title">Total Expense</div>
-                        <div class="card-icon bg-expense-glow">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"/></svg>
-                        </div>
-                    </div>
-                    <div class="card-value" style="color: var(--expense);" id="val-expense">$0.00</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">Spending outputs</div>
-                </div>
-                <div class="card" style="border-bottom: 4px solid var(--warning);">
-                    <div class="card-meta-row">
-                        <div class="card-title">Savings Rate</div>
-                        <div class="card-icon bg-warning-glow">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        </div>
-                    </div>
-                    <div class="card-value" id="val-savings-rate" style="color: var(--warning);">0%</div>
-                    <div style="font-size: 11px; color: var(--text-muted);">Disposable safety net</div>
-                </div>
-            </div>
+      <!-- charts -->
+      <div class="charts-grid">
+        <div class="glass-card chart-card">
+          <div class="chart-card-header">
+            <span class="chart-card-title">Income vs Expense</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="incomeExpenseChart"></canvas>
+          </div>
+        </div>
 
-            <!-- Dashboard content split view -->
-            <div class="dashboard-content-split">
-                
-                <!-- Left Hand Visual & Alert Panels -->
-                <div class="visual-card">
-                    
-                    <!-- Advanced Visualisation Card (Tabbed) -->
-                    <div class="card" style="padding: 20px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                            <h2 style="font-size: 15px; font-weight: 700;">Financial Metrics</h2>
-                            <div class="chart-toggle-tabs">
-                                <button class="chart-toggle-btn active" id="btn-flow" onclick="switchChartType('flow')">Cash Flow</button>
-                                <button class="chart-toggle-btn" id="btn-breakdown" onclick="switchChartType('breakdown')">Categories</button>
-                            </div>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="cashFlowChart"></canvas>
-                        </div>
-                    </div>
+        <div class="glass-card chart-card">
+          <div class="chart-card-header">
+            <span class="chart-card-title">Category Spending</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
 
-                    <!-- Category Budget Limits Visual Section -->
-                    <div class="card" style="padding: 20px;">
-                        <h2 style="font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <span>Category Budgets</span>
-                        </h2>
-                        <div id="budget-widget-container" class="budget-widget-list">
-                            <!-- Budget indicators populated via JS dynamically -->
-                        </div>
-                    </div>
+        <div class="glass-card chart-card">
+          <div class="chart-card-header">
+            <span class="chart-card-title">Monthly Outlay Trend</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="monthlySpendingChart"></canvas>
+          </div>
+        </div>
 
-                    <!-- Smart Financial Advisory Insights Box -->
-                    <div class="card insights-panel" style="padding: 20px;">
-                        <h2 style="font-size: 14px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            Smart Ledger Insights
-                        </h2>
-                        <div id="insights-text-container" class="insight-row">
-                            <!-- Advisory dynamically outputted -->
-                        </div>
-                    </div>
+        <div class="glass-card chart-card">
+          <div class="chart-card-header">
+            <span class="chart-card-title">Cumulative Expense Trend</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="expenseTrendChart"></canvas>
+          </div>
+        </div>
+      </div>
 
-                </div>
-
-                <!-- Right Hand Ledger Section -->
-                <div style="display: flex; flex-direction: column; gap: 16px;">
-                    <div class="table-toolbar">
-                        
-                        <!-- Premium Dynamic Search Action Bar -->
-                        <div class="table-search-row">
-                            <div class="search-wrapper">
-                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                                <input type="text" id="ledger-search" class="search-input" oninput="handleSearchFilter()" placeholder="Search transactions description or class...">
-                            </div>
-                            <button class="btn btn-outline" style="white-space: nowrap;" onclick="exportTransactionsToCSV()">
-                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                Export CSV
-                            </button>
-                        </div>
-
-                        <!-- Categorical Filters Toolbar with sorting selector -->
-                        <div class="table-filters-row">
-                            <div class="filter-tabs">
-                                <button class="btn-filter active" onclick="setFilter('all', this)">All Logs</button>
-                                <button class="btn-filter" onclick="setFilter('income', this)">Incomes</button>
-                                <button class="btn-filter" onclick="setFilter('expense', this)">Expenses</button>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 12px; font-weight: 700; color: var(--text-muted);">Sort By:</span>
-                                <select id="ledger-sorter" class="sort-select" onchange="handleSortChange()">
-                                    <option value="date-desc">Newest Date</option>
-                                    <option value="date-asc">Oldest Date</option>
-                                    <option value="amount-desc">Value (High to Low)</option>
-                                    <option value="amount-asc">Value (Low to High)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Ledger Table -->
-                    <div class="ledger-table-card">
-                        <div class="ledger-table-wrapper">
-                            <table class="ledger-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Description</th>
-                                        <th>Category</th>
-                                        <th>Amount</th>
-                                        <th style="text-align: right;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ledgerTableBody">
-                                    <!-- Dynamic content -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <div id="empty-state-container"></div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- SETTINGS PANEL SECTION -->
-        <section id="settings-page" class="app-section">
-            <div class="settings-card card">
-                <div class="settings-heading">
-                    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                    Profile & Limit Configuration Settings
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="pref-name">Your Display Name</label>
-                        <input type="text" id="pref-name" class="form-control" placeholder="Jane Doe">
-                    </div>
-                    <div class="form-group">
-                        <label for="pref-currency">Display Currency</label>
-                        <select id="pref-currency" class="form-control">
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
-                            <option value="GBP">GBP (£)</option>
-                            <option value="INR">INR (₹)</option>
-                            <option value="JPY">JPY (¥)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Monthly Category Budget Setting Section -->
-                <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 20px;">
-                    <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Customize Category Spending Limits</div>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Set targeted monthly budgets for each major expense allocation class.</p>
-                    
-                    <div class="budget-setting-grid">
-                        <div class="form-group">
-                            <label for="budget-food">🍔 Food & Dining Limit</label>
-                            <input type="number" id="budget-food" class="form-control" placeholder="No limit set">
-                        </div>
-                        <div class="form-group">
-                            <label for="budget-shopping">🛍️ Shopping Limit</label>
-                            <input type="number" id="budget-shopping" class="form-control" placeholder="No limit set">
-                        </div>
-                        <div class="form-group">
-                            <label for="budget-bills">📱 Recharge & Bills Limit</label>
-                            <input type="number" id="budget-bills" class="form-control" placeholder="No limit set">
-                        </div>
-                        <div class="form-group">
-                            <label for="budget-petrol">🚗 Petrol & Auto Limit</label>
-                            <input type="number" id="budget-petrol" class="form-control" placeholder="No limit set">
-                        </div>
-                        <div class="form-group">
-                            <label for="budget-utilities">💡 Utilities Limit</label>
-                            <input type="number" id="budget-utilities" class="form-control" placeholder="No limit set">
-                        </div>
-                        <div class="form-group">
-                            <label for="budget-entertainment">🎬 Entertainment Limit</label>
-                            <input type="number" id="budget-entertainment" class="form-control" placeholder="No limit set">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="premium-switch-group">
-                    <div>
-                        <div style="font-weight: 600; font-size: 15px; margin-bottom: 2px;">Visual Theme Mode</div>
-                        <div style="font-size: 13px; color: var(--text-muted);">Toggle dark UI interface variables dynamically</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="pref-darkmode" onchange="toggleThemeFromSwitch(this)">
-                        <span class="switch-slider"></span>
-                    </label>
-                </div>
-
-                <button class="btn btn-primary" onclick="saveSystemPreferences()">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                    Apply Config & Limits
-                </button>
-
-                <!-- Danger Zone Block -->
-                <div class="danger-card">
-                    <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px;">
-                        <div style="color: var(--expense); margin-top: 3px;">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                        </div>
-                        <div>
-                            <h3 style="font-size: 15px; font-weight: 700; color: var(--text-color); margin-bottom: 4px;">Danger Area</h3>
-                            <p style="font-size: 13px; color: var(--text-muted);">Reset local storage completely. This action deletes all transactions and personalized budgets [cite: 14].</p>
-                        </div>
-                    </div>
-                    <button class="btn btn-danger" onclick="triggerWipeRoutine()">Wipe Session Databases</button>
-                </div>
-            </div>
-        </section>
+      <!-- recent transactions -->
+      <div class="glass-card table-card" style="margin-top: 1.5rem;">
+        <div class="table-card-header">
+          <h3 style="font-weight: 700; font-size: 1.1rem;">Recent Transactions</h3>
+          <a onclick="switchPage('transactions', document.querySelectorAll('.nav-item')[1])" style="color: var(--indigo-primary); font-size: 0.85rem; font-weight: 700; cursor: pointer; text-decoration: none;">View All History <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="responsive-table-container">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody id="recentTransactionsTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
 
-    <!-- TRANSACTION CREATION FORM OVERLAY MODAL -->
-    <div class="modal-overlay" id="txModal" onclick="handleOverlayOuterClick(event)">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>Add New Transaction Log</h3>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="txForm" onsubmit="handleTransactionSubmit(event)">
-                    
-                    <div class="choice-segment">
-                        <label class="choice-inc">
-                            <input type="radio" name="txType" value="income" checked onchange="updateDynamicCategoryMenu()">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
-                            Income Log
-                        </label>
-                        <label class="choice-exp">
-                            <input type="radio" name="txType" value="expense" onchange="updateDynamicCategoryMenu()">
-                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                            Expense Out
-                        </label>
-                    </div>
+    <!-- transactions page -->
+    <main id="transactionsPage" class="page-container">
+      <div class="glass-card table-card">
+        
+        <!-- search and filters -->
+        <div class="table-header-row">
+          <div class="search-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="txSearch" class="search-input" placeholder="Search by description..." oninput="handleFilterChange()">
+          </div>
+          
+          <div class="filter-group">
+            <select id="filterType" class="select-filter" onchange="handleFilterChange()">
+              <option value="all">All Types</option>
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+            </select>
+            
+            <select id="filterCategory" class="select-filter" onchange="handleFilterChange()">
+              <option value="all">All Categories</option>
+              <option value="Food & Dining">Food & Dining</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Recharge & Bills">Recharge & Bills</option>
+              <option value="Petrol & Auto">Petrol & Auto</option>
+              <option value="Utilities">Utilities</option>
+              <option value="Salary">Salary</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Other">Other</option>
+            </select>
+            
+            <select id="filterMonth" class="select-filter" onchange="handleFilterChange()">
+              <option value="all">All Months</option>
+            </select>
+            
+            <select id="sortField" class="select-filter" onchange="handleFilterChange()">
+              <option value="date-desc">Date (Newest First)</option>
+              <option value="date-asc">Date (Oldest First)</option>
+              <option value="amount-desc">Amount (Highest First)</option>
+              <option value="amount-asc">Amount (Lowest First)</option>
+              <option value="category-asc">Category (A-Z)</option>
+            </select>
 
-                    <div class="form-group">
-                        <label for="txDesc">Log Description</label>
-                        <input type="text" id="txDesc" class="form-control" placeholder="e.g. Whole Foods Groceries, Freelance Retainer" required>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="txAmount">Transaction Amount</label>
-                            <input type="number" id="txAmount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="txDate">Settlement Date</label>
-                            <input type="date" id="txDate" class="form-control" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="txCategory">Category Class</label>
-                        <select id="txCategory" class="form-control" required>
-                            <!-- Category choices injected dynamically -->
-                        </select>
-                    </div>
-
-                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
-                        <button type="button" class="btn btn-outline" onclick="closeModal()">Dismiss</button>
-                        <button type="submit" class="btn" style="background-color: var(--primary); color: white;" id="txSubmitBtn">Save Transaction</button>
-                    </div>
-                </form>
-            </div>
+            <button class="btn btn-secondary" onclick="exportCSV()" title="Download CSV">
+              <i class="fa-solid fa-file-csv" style="color: #047857;"></i> CSV
+            </button>
+            <button class="btn btn-secondary" onclick="generatePDF()" title="Download PDF Summary">
+              <i class="fa-solid fa-file-pdf" style="color: #be123c;"></i> PDF Report
+            </button>
+          </div>
         </div>
+
+        <div class="responsive-table-container">
+          <table class="custom-table" id="transactionsMasterTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Recurring</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="transactionsMasterTableBody">
+            </tbody>
+          </table>
+          <div id="txEmptyState" class="empty-state" style="display: none;">
+            <i class="fa-regular fa-folder-open empty-icon"></i>
+            <div class="empty-title">No transactions found</div>
+            <p>Try refining your search terms, adjusting filter tags, or adding a new transaction.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- budgets page -->
+    <main id="budgetsPage" class="page-container">
+      <div class="budgets-grid" id="budgetsGrid">
+      </div>
+    </main>
+
+
+    <!-- settings page -->
+    <main id="settingsPage" class="page-container">
+      <div class="settings-grid">
+        <!-- preferences -->
+        <div class="glass-card settings-card">
+          <h3 class="settings-section-title"><i class="fa-solid fa-user-gear"></i> Preferences</h3>
+          <form id="settingsForm" onsubmit="saveSettings(event)">
+            <div class="form-group">
+              <label class="form-label" for="settingsName">User Name</label>
+              <input type="text" id="settingsName" class="form-control" required autocomplete="off">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="settingsCurrency">Base Currency</label>
+              <select id="settingsCurrency" class="form-control">
+                <option value="USD">USD ($) - Dollar</option>
+                <option value="INR">INR (₹) - Rupee</option>
+                <option value="EUR">EUR (€) - Euro</option>
+                <option value="GBP">GBP (£) - Pound</option>
+                <option value="JPY">JPY (¥) - Yen</option>
+              </select>
+            </div>
+            
+            <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; margin-bottom: 1.5rem;">
+              <div>
+                <label class="form-label" style="margin-bottom: 0.2rem;">Dark Mode Theme</label>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Switch between light and dark UI variables</span>
+              </div>
+              <button type="button" id="settingsThemeToggle" class="theme-toggle-btn" onclick="toggleTheme()">
+                <i class="fa-solid fa-moon"></i>
+              </button>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-floppy-disk"></i> Save Configurations
+            </button>
+          </form>
+        </div>
+
+        <!-- backup and reset -->
+        <div class="glass-card settings-card">
+          <h3 class="settings-section-title" style="color: var(--color-expense); border-color: rgba(239,68,68,0.2);"><i class="fa-solid fa-database"></i> Backup & Resets</h3>
+          
+          <div style="margin-bottom: 2rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem;">Data Export / Backup</h4>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Securely download your transaction logs and configurations. You can restore this file anytime.
+            </p>
+            <button class="btn btn-secondary" onclick="exportJSON()">
+              <i class="fa-solid fa-download"></i> Export JSON Backup
+            </button>
+          </div>
+
+          <div style="margin-bottom: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem;">Import Backup</h4>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Restore data from a previously downloaded <code>.json</code> backup file. Note: This will overwrite current entries.
+            </p>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importJSON(event)">
+              <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
+                <i class="fa-solid fa-upload"></i> Upload Backup File
+              </button>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid rgba(239,68,68,0.2); padding-top: 1.5rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--color-expense); margin-bottom: 0.5rem;">System Reset</h4>
+            <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Irreversibly delete all transaction history, custom budgets, and personalized settings to start fresh.
+            </p>
+            <button class="btn btn-secondary" style="border-color: rgba(239,68,68,0.3); color: var(--color-expense); background-color: var(--color-expense-light);" onclick="resetApplicationData()">
+              <i class="fa-solid fa-trash-can"></i> WIPE ALL SYSTEM DATA
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- transaction modal -->
+  <div id="txModal" class="modal-overlay" onclick="closeTransactionModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="txModalTitle" class="modal-title">New Transaction</h3>
+        <button class="modal-close" onclick="closeTransactionModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <form id="txForm" onsubmit="handleTransactionSubmit(event)">
+        <input type="hidden" id="txId">
+
+        <div class="form-group">
+          <label class="form-label">Flow Type</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <label style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.85rem;" id="typeIncomeLabel">
+              <input type="radio" name="txType" value="income" checked onclick="syncModalCategories('income')"> Income
+            </label>
+            <label style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem; border: 1px solid var(--border-color); border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.85rem;" id="typeExpenseLabel">
+              <input type="radio" name="txType" value="expense" onclick="syncModalCategories('expense')"> Expense
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="txDescription">Description</label>
+          <input type="text" id="txDescription" class="form-control" placeholder="e.g. Weekly Groceries" required autocomplete="off">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="txAmount">Amount (<span class="currency-symbol">₹</span>)</label>
+            <input type="number" id="txAmount" class="form-control" step="0.01" min="0.01" placeholder="0.00" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="txCategory">Category</label>
+            <select id="txCategory" class="form-control">
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="txDate">Transaction Date</label>
+            <input type="date" id="txDate" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="txRecurring">Recurring Pattern</label>
+            <select id="txRecurring" class="form-control">
+              <option value="none">One-time</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeTransactionModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="txFormSubmitBtn">Save Transaction</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <!-- ChartJS External CDN Component Framework -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- budget modal -->
+  <div id="budgetModal" class="modal-overlay" onclick="closeBudgetModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Set Category Budget</h3>
+        <button class="modal-close" onclick="closeBudgetModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <form id="budgetForm" onsubmit="handleBudgetSubmit(event)">
+        <input type="hidden" id="budgetCategoryName">
+        
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <div id="budgetCategoryDisplay" style="font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0;">
+          </div>
+        </div>
 
-    <!-- Your Application Logic & DOM Driver -->
-    <script src="./script.js"></script>
+        <div class="form-group">
+          <label class="form-label" for="budgetLimitInput">Monthly Limit Limit (<span class="currency-symbol">₹</span>)</label>
+          <input type="number" id="budgetLimitInput" class="form-control" min="0" placeholder="e.g. 500" required>
+          <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem; display: block;">Set to 0 to disable budget limit warnings for this category.</span>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeBudgetModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Budget</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- external libraries & script -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+
 </body>
 </html>
