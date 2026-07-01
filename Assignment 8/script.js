@@ -579,6 +579,16 @@ let computedMetrics = {
   totalTxCount: 0,
 };
 
+// helper to get the latest transaction month (or current month if empty)
+function getCurrentYearMonth() {
+  if (appState.transactions && appState.transactions.length > 0) {
+    const latestTx = [...appState.transactions].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    return latestTx.date.substring(0, 7);
+  }
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+}
+
 function calculateTotals() {
   let income = 0;
   let expense = 0;
@@ -593,8 +603,7 @@ function calculateTotals() {
   });
 
   // current month savings
-  const today = new Date();
-  const currentYearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  const currentYearMonth = getCurrentYearMonth();
 
   let thisMonthIncome = 0;
   let thisMonthExpense = 0;
@@ -952,8 +961,7 @@ function renderBudgetsView() {
   grid.innerHTML = '';
 
   // calculate total spent per category this month
-  const today = new Date();
-  const currentYearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  const currentYearMonth = getCurrentYearMonth();
 
   const spendSummary = {};
   Object.keys(CATEGORY_COLORS).forEach((c) => {
@@ -961,7 +969,7 @@ function renderBudgetsView() {
   });
 
   appState.transactions.forEach((tx) => {
-    if (tx.type === 'expense' && tx.date.startsWith(currentYearMonth)) {
+    if (tx.type === 'expense') {
       spendSummary[tx.category] =
         (spendSummary[tx.category] || 0) + parseFloat(tx.amount);
     }
@@ -1047,12 +1055,11 @@ function handleBudgetSubmit(e) {
 }
 
 function calculateBudgetWarnings() {
-  const today = new Date();
-  const currentYearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  const currentYearMonth = getCurrentYearMonth();
 
   const spendSummary = {};
   appState.transactions.forEach((tx) => {
-    if (tx.type === 'expense' && tx.date.startsWith(currentYearMonth)) {
+    if (tx.type === 'expense') {
       spendSummary[tx.category] =
         (spendSummary[tx.category] || 0) + parseFloat(tx.amount);
     }
@@ -1200,7 +1207,11 @@ function renderCharts() {
   });
 
   // group data by month
-  const today = new Date();
+  let today = new Date();
+  if (appState.transactions && appState.transactions.length > 0) {
+    const sortedDates = appState.transactions.map(t => t.date).sort();
+    today = new Date(sortedDates[sortedDates.length - 1]);
+  }
   const monthsData = {};
 
   // prefill last 6 months

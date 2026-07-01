@@ -126,17 +126,6 @@ body {
   letter-spacing: -0.5px;
 }
 
-.logo-version {
-  font-size: 0.65rem;
-  font-weight: 600;
-  background-color: var(--indigo-light);
-  color: var(--indigo-primary);
-  padding: 0.2rem 0.4rem;
-  border-radius: 6px;
-  vertical-align: middle;
-  margin-left: 0.25rem;
-}
-
 .nav-list {
   list-style: none;
   display: flex;
@@ -227,11 +216,6 @@ body {
   text-overflow: ellipsis;
 }
 
-.profile-role {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
-
 /* main wrapper */
 .main-wrapper {
   margin-left: 260px;
@@ -257,14 +241,6 @@ body {
   transition: background-color 0.3s;
 }
 
-.mobile-menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: var(--text-primary);
-  font-size: 1.5rem;
-  cursor: pointer;
-}
 
 .nav-actions {
   display: flex;
@@ -379,6 +355,7 @@ body {
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
+  min-width: 0;
   border-radius: 20px;
   padding: 1.5rem;
   box-shadow: var(--card-shadow);
@@ -968,11 +945,22 @@ body {
   transition: color 0.3s;
 }
 
-.login-subtitle {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  margin-bottom: 2rem;
-  transition: color 0.3s;
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 /* responsive */
@@ -1025,11 +1013,11 @@ body {
     justify-content: flex-start !important;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   .filter-group::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome/Safari */
+    display: none;
   }
   .select-filter, .filter-group .btn {
     flex: 0 0 auto !important;
@@ -1050,12 +1038,12 @@ body {
     align-items: center;
     justify-content: center;
     padding: 0 !important;
-    gap: 0 !important; /* Remove flex gap to prevent horizontal shifting of the icon */
+    gap: 0 !important;
     box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
     z-index: 150;
     transition: transform 0.2s, box-shadow 0.2s;
     font-size: 0;
-    line-height: 0 !important; /* Ensure no line height pushes the icon vertically */
+    line-height: 0 !important;
   }
   .navbar .btn-primary:active {
     transform: scale(0.9);
@@ -1107,53 +1095,13 @@ body {
     gap: 0.5rem 1rem;
   }
 
-  #transactionsMasterTableBody tr td:nth-child(1) { 
-    grid-area: date; 
-    font-size: 0.8rem; 
-    color: var(--text-muted); 
-    font-weight: 600; 
-  }
-  #transactionsMasterTableBody tr td:nth-child(2) { 
-    grid-area: desc; 
-    font-size: 1.05rem; 
-    font-weight: 700; 
-    color: var(--text-primary); 
-    word-break: break-word !important; 
-    white-space: normal !important; /* Override desktop inline white-space style */
-    max-width: none !important;     /* Override desktop inline max-width style */
-    overflow: visible !important;   /* Override desktop inline overflow style */
-    margin-top: 0.15rem;
-  }
-  #transactionsMasterTableBody tr td:nth-child(3) { 
-    grid-area: cat; 
-    display: flex; 
-    justify-content: flex-start;
-    margin-top: 0.25rem;
-  }
-  #transactionsMasterTableBody tr td:nth-child(4) { 
-    display: none !important; /* Hide redundant type column */
-  }
-  #transactionsMasterTableBody tr td:nth-child(5) { 
-    grid-area: amount; 
-    font-size: 1.15rem; 
-    font-weight: 800; 
-    justify-content: flex-end; 
-    text-align: right; 
-    align-self: center;
-  }
-  #transactionsMasterTableBody tr td:nth-child(6) { 
-    grid-area: recurring; 
-    display: flex;
-    justify-content: flex-end;
-    align-self: center;
-    margin-top: 0.25rem;
-  }
-  #transactionsMasterTableBody tr td:nth-child(7) { 
-    grid-area: actions; 
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-  }
+  #transactionsMasterTableBody tr td:nth-child(1) { grid-area: date; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+  #transactionsMasterTableBody tr td:nth-child(2) { grid-area: desc; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); overflow-wrap: break-word !important; white-space: normal !important; max-width: none !important; overflow: visible !important; margin-top: 0.15rem; }
+  #transactionsMasterTableBody tr td:nth-child(3) { grid-area: cat; display: flex; justify-content: flex-start; margin-top: 0.25rem; }
+  #transactionsMasterTableBody tr td:nth-child(4) { display: none !important; }
+  #transactionsMasterTableBody tr td:nth-child(5) { grid-area: amount; font-size: 1.15rem; font-weight: 800; justify-content: flex-end; text-align: right; align-self: center; }
+  #transactionsMasterTableBody tr td:nth-child(6) { grid-area: recurring; display: flex; justify-content: flex-end; align-self: center; margin-top: 0.25rem; }
+  #transactionsMasterTableBody tr td:nth-child(7) { grid-area: actions; display: flex; justify-content: flex-end; gap: 0.75rem; }
 
   #recentTransactionsTableBody tr {
     display: grid;
@@ -1165,37 +1113,11 @@ body {
     gap: 0.5rem 1rem;
   }
 
-  #recentTransactionsTableBody tr td:nth-child(1) { 
-    grid-area: date; 
-    font-size: 0.8rem; 
-    color: var(--text-muted); 
-    font-weight: 600; 
-  }
-  #recentTransactionsTableBody tr td:nth-child(2) { 
-    grid-area: desc; 
-    font-size: 1.05rem; 
-    font-weight: 700; 
-    color: var(--text-primary); 
-    word-break: break-word; 
-    margin-top: 0.15rem;
-  }
-  #recentTransactionsTableBody tr td:nth-child(3) { 
-    grid-area: cat; 
-    display: flex; 
-    justify-content: flex-start;
-    margin-top: 0.25rem;
-  }
-  #recentTransactionsTableBody tr td:nth-child(4) { 
-    display: none !important; /* Hide redundant type column */
-  }
-  #recentTransactionsTableBody tr td:nth-child(5) { 
-    grid-area: amount; 
-    font-size: 1.15rem; 
-    font-weight: 800; 
-    justify-content: flex-end; 
-    text-align: right; 
-    align-self: center;
-  }
+  #recentTransactionsTableBody tr td:nth-child(1) { grid-area: date; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+  #recentTransactionsTableBody tr td:nth-child(2) { grid-area: desc; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); overflow-wrap: break-word; margin-top: 0.15rem; }
+  #recentTransactionsTableBody tr td:nth-child(3) { grid-area: cat; display: flex; justify-content: flex-start; margin-top: 0.25rem; }
+  #recentTransactionsTableBody tr td:nth-child(4) { display: none !important; }
+  #recentTransactionsTableBody tr td:nth-child(5) { grid-area: amount; font-size: 1.15rem; font-weight: 800; justify-content: flex-end; text-align: right; align-self: center; }
 
   .budgets-grid {
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -1225,7 +1147,6 @@ body {
     font-size: 1.25rem !important;
   }
   
-  /* Bottom Sheet modal structure on mobile viewport sizes */
   .modal-overlay {
     align-items: flex-end;
   }
